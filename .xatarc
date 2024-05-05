@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Dereje-Getu-Tadesse-s-workspace-icn0nb.eu-central-1.xata.sh/db/clean",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}

@@ -4,6 +4,9 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
+    "@xata.io/client": "^0.29.4",
+    "@xata.io/drizzle": "^0.0.21",
+    "drizzle-orm": "^0.30.10",
     "hono": "^4.3.2"
   },
   "devDependencies": {

@@ -4,13 +4,14 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
-    "@xata.io/client": "^0.29.4",
+    "@xata.io/client": "next",
     "@xata.io/drizzle": "^0.0.21",
     "drizzle-orm": "^0.30.10",
     "hono": "^4.3.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240403.0",
+    "drizzle-kit": "^0.20.17",
     "wrangler": "^3.47.0"
   }
 }

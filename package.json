@@ -4,12 +4,15 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
+    "@types/bun": "^1.1.1",
     "drizzle-orm": "^0.30.10",
-    "hono": "^4.3.2"
+    "hono": "^4.3.2",
+    "pg": "^8.11.5"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240403.0",
-    "drizzle-kit": "^0.20.17",
+    "@types/pg": "^8.11.6",
+    "drizzle-kit": "^0.20.18",
     "wrangler": "^3.47.0"
   }
 }

@@ -3,7 +3,8 @@ import type { Env } from '../../types';
 import { contents } from '../../database/schemas/content';
 import { neondb } from '../../lib/db';
 import { validator } from 'hono/validator';
-import { cotentSchema } from '../../schemas/content';
+import { findByIdImdb } from '../../lib/tmdb';
+import { contentPostCreateSchema } from '../../schemas/content';
 
 export const app = new Hono<{ Bindings: Env }>();
 
@@ -20,32 +21,44 @@ app.get('/contents', async (c) => {
 app.post(
   '/contents',
   validator('json', (content, c) => {
-    const parsed = cotentSchema.safeParse(content);
+    const parsed = contentPostCreateSchema.safeParse(content);
+
     if (!parsed.success) {
-      return c.text('Invalid!', 401);
+      return c.json({ error: 'Invalid request payload' }, 400);
     }
+
     return parsed.data;
   }),
   async (c) => {
-    const { ib_id, name, tb_id, backdrop_path, flag, poster_path } =
-      c.req.valid('json');
+    try {
+      const { flag, imdb_id, is_family_friendly } = c.req.valid('json');
 
-    const db = neondb(c.env.DATABASE_URL);
+      const db = neondb(c.env.DATABASE_URL);
 
-    await db.insert(contents).values({
-      tb_id,
-      ib_id,
-      name,
-      flag,
-      backdrop_path,
-      poster_path,
-    });
+      const content = await findByIdImdb(imdb_id, c.env.TMDB_API_KEY, 'fr');
 
-    return c.json(
-      {
-        message: 'Created!',
-      },
-      201
-    );
+      if (!content || !content.tv_results || content.tv_results.length === 0) {
+        return c.json({ error: 'Content not found' }, 404);
+      }
+
+      const data = {
+        tb_id: imdb_id,
+        flag,
+        is_family_friendly,
+        backdrop_path: content.tv_results[0].backdrop_path,
+        poster_path: content.tv_results[0].poster_path,
+      };
+
+      await db.insert(contents).values(data);
+
+      return c.json(
+        {
+          message: 'Content created successfully',
+        },
+        201
+      );
+    } catch (error) {
+      return c.json({ error: 'Internal server error' }, 500);
+    }
   }
 );

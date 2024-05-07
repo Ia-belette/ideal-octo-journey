@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { Env } from '../../types';
+import type { Env } from '../../types';
 import { contents } from '../../database/schemas/content';
 import { neondb } from '../../lib/db';
 import { validator } from 'hono/validator';

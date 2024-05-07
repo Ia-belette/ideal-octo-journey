@@ -1,7 +1,9 @@
 {
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "format": "bunx @biomejs/biome format ./src --write",
+    "lint": "bunx @biomejs/biome lint ./src"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.1",

@@ -2,6 +2,9 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
+    "d:generate": "drizzle-kit generate:pg",
+    "d:studio": "drizzle-kit studio",
+    "d:push": "drizzle-kit push:pg",
     "format": "bunx @biomejs/biome format ./src --write",
     "lint": "bunx @biomejs/biome lint ./src"
   },

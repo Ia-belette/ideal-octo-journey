@@ -1,13 +1,8 @@
 import { Hono } from 'hono';
+import { app as contents } from './controllers/contents';
 
-export type Env = {
-  DATABASE_URL: string;
-};
+const app = new Hono();
 
-const app = new Hono<{ Bindings: Env }>();
-
-app.get('/', async (c) => {
-  return c.text(`Hello Hono!`);
-});
+app.route('/', contents);
 
 export default app;

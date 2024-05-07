@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { csrf } from 'hono/csrf';
 import { app as contents } from './controllers/contents';
+import { cache } from 'hono/cache';
 
 const app = new Hono();
 
@@ -18,6 +19,14 @@ app.use(
 app.use(
   csrf({
     origin: ['cleann.dereje.fr'],
+  })
+);
+
+app.get(
+  '*',
+  cache({
+    cacheName: 'cleann-cache',
+    cacheControl: 'max-age=3600',
   })
 );
 

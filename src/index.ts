@@ -1,8 +1,12 @@
 import { Hono } from 'hono';
 
-const app = new Hono();
+export type Env = {
+  DATABASE_URL: string;
+};
 
-app.get('/', (c) => {
+const app = new Hono<{ Bindings: Env }>();
+
+app.get('/', async (c) => {
   return c.text(`Hello Hono!`);
 });
 

@@ -3,7 +3,6 @@ import { Env } from '../../types';
 import { contents } from '../../database/schemas/content';
 import { neondb } from '../../lib/db';
 import { validator } from 'hono/validator';
-import { z } from 'zod';
 import { cotentSchema } from '../../schemas/content';
 
 export const app = new Hono<{ Bindings: Env }>();

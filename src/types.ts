@@ -1,3 +1,3 @@
 export type Env = {
-  DATABASE_URL: string;
+	DATABASE_URL: string;
 };

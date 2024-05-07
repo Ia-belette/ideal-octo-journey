@@ -42,7 +42,7 @@ app.post(
       }
 
       const data = {
-        tb_id: imdb_id,
+        tb_id: content.tv_results[0].id,
         flag,
         is_family_friendly,
         backdrop_path: content.tv_results[0].backdrop_path,
@@ -61,4 +61,10 @@ app.post(
       return c.json({ error: 'Internal server error' }, 500);
     }
   }
+);
+
+app.get(
+  '/contents/:id',
+  validator('param', (content, c) => {}),
+  async (c) => {}
 );

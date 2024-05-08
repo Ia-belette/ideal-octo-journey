@@ -15,7 +15,21 @@ app.get('/contents', async (c) => {
   try {
     const db = neondb(c.env.DATABASE_URL);
     const results = await db.select().from(contents);
-    return c.json(results);
+    const featured = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.featured, true));
+
+    const featuredDetails = await movieDetails(
+      Number(featured[0].tb_id),
+      c.env.TMDB_API_KEY,
+      'fr'
+    );
+    console.log(featured[0].tb_id);
+    return c.json({
+      contents: results,
+      featured: featuredDetails,
+    });
   } catch (error) {
     return c.json({ error }, 400);
   }
@@ -38,7 +52,11 @@ app.post(
 
       const db = neondb(c.env.DATABASE_URL);
 
-      const content = await movieDetails(tmdb_id, c.env.TMDB_API_KEY, 'fr');
+      const content = await movieDetails(
+        Number(tmdb_id),
+        c.env.TMDB_API_KEY,
+        'fr'
+      );
       const data = {
         tb_id: tmdb_id,
         flag,
@@ -79,7 +97,7 @@ app.get(
   async (c) => {
     try {
       const id = c.req.valid('param');
-      const movie = await movieDetails(id, c.env.TMDB_API_KEY, 'fr');
+      const movie = await movieDetails(Number(id), c.env.TMDB_API_KEY, 'fr');
       const trailer = await movieTrailer(id, c.env.TMDB_API_KEY, 'fr');
 
       return c.json({ movie, trailer });

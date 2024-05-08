@@ -105,3 +105,25 @@ app.get('/contents/family-friendly', async (c) => {
     return c.json({ error: 'Internal server error' }, 500);
   }
 });
+
+app.delete(
+  '/contents/:id',
+  validator('param', (content, c) => {
+    const parsed = movieDetailsSchema.safeParse(content.id);
+    if (!parsed.success) {
+      console.log(parsed.error, 'parsed');
+      return c.json({ error: 'Invalid request payload' }, 400);
+    }
+    return parsed.data;
+  }),
+  async (c) => {
+    try {
+      const id = c.req.valid('param');
+      const db = neondb(c.env.DATABASE_URL);
+      await db.delete(contents).where(eq(contents.tb_id, Number(id)));
+      return c.json({ message: 'Content deleted successfully' });
+    } catch (error) {
+      return c.json({ error: 'Internal server error' }, 500);
+    }
+  }
+);

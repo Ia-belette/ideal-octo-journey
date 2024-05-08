@@ -4,7 +4,7 @@ import { validator } from 'hono/validator';
 
 import { contents } from '#/database/schemas/content';
 import { neondb } from '#/lib/db';
-import { movieDetails } from '#/lib/tmdb';
+import { movieDetails, movieTrailer } from '#/lib/tmdb';
 import { contentPostCreateSchema, movieDetailsSchema } from '#/schemas/content';
 
 import type { Env } from '#/types';
@@ -15,10 +15,8 @@ app.get('/contents', async (c) => {
   try {
     const db = neondb(c.env.DATABASE_URL);
     const results = await db.select().from(contents);
-    console.log(results, 'results');
     return c.json(results);
   } catch (error) {
-    console.log(error);
     return c.json({ error }, 400);
   }
 });
@@ -41,7 +39,6 @@ app.post(
       const db = neondb(c.env.DATABASE_URL);
 
       const content = await movieDetails(tmdb_id, c.env.TMDB_API_KEY, 'fr');
-
       const data = {
         tb_id: tmdb_id,
         flag,
@@ -65,7 +62,6 @@ app.post(
         201
       );
     } catch (error) {
-      console.log(error, 'error');
       return c.json({ error: 'Internal server error' }, 500);
     }
   }
@@ -76,7 +72,6 @@ app.get(
   validator('param', (content, c) => {
     const parsed = movieDetailsSchema.safeParse(content.id);
     if (!parsed.success) {
-      console.log(parsed.error, 'parsed');
       return c.json({ error: 'Invalid request payload' }, 400);
     }
     return parsed.data;
@@ -85,7 +80,9 @@ app.get(
     try {
       const id = c.req.valid('param');
       const movie = await movieDetails(id, c.env.TMDB_API_KEY, 'fr');
-      return c.json({ movie });
+      const trailer = await movieTrailer(id, c.env.TMDB_API_KEY, 'fr');
+
+      return c.json({ movie, trailer });
     } catch (error) {
       return c.json({ error: 'Internal server error' }, 500);
     }
@@ -101,7 +98,6 @@ app.get('/contents/family-friendly', async (c) => {
       .where(eq(contents.is_family_friendly, true));
     return c.json(results);
   } catch (error) {
-    console.log(error, 'error');
     return c.json({ error: 'Internal server error' }, 500);
   }
 });
@@ -111,7 +107,6 @@ app.delete(
   validator('param', (content, c) => {
     const parsed = movieDetailsSchema.safeParse(content.id);
     if (!parsed.success) {
-      console.log(parsed.error, 'parsed');
       return c.json({ error: 'Invalid request payload' }, 400);
     }
     return parsed.data;

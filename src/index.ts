@@ -1,35 +1,57 @@
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import { csrf } from "hono/csrf";
-import { app as contents } from "./controllers/contents";
-import { cache } from "hono/cache";
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { csrf } from 'hono/csrf';
+import { cache } from 'hono/cache';
+import { basicAuth } from 'hono/basic-auth';
 
-const app = new Hono();
+import { app as contents } from './controllers/contents';
+import { Env } from './types';
+
+const app = new Hono<{
+  Bindings: Env;
+}>();
 
 app.use(
-	cors({
-		origin: ["cleann.dereje.fr"],
-		allowMethods: ["GET", "POST", "DELETE"],
-		credentials: true,
-		maxAge: 600,
-		allowHeaders: ["Content Type", "Authorization"],
-	}),
+  cors({
+    origin: ['cleann.dereje.fr'],
+    allowMethods: ['GET', 'POST', 'DELETE'],
+    credentials: true,
+    maxAge: 600,
+    allowHeaders: ['Content Type', 'Authorization'],
+  })
 );
 
 app.use(
-	csrf({
-		origin: ["cleann.dereje.fr"],
-	}),
+  csrf({
+    origin: ['cleann.dereje.fr'],
+  })
 );
 
 app.get(
-	"*",
-	cache({
-		cacheName: "cleann-cache",
-		cacheControl: "max-age=3600",
-	}),
+  '*',
+  cache({
+    cacheName: 'cleann-cache',
+    cacheControl: 'max-age=3600',
+  })
 );
 
-app.route("/", contents);
+app.use('*', async (c, next) => {
+  const auth = basicAuth({
+    username: c.env.BASIC_USERNAME,
+    password: c.env.BASIC_PASSWORD,
+    verifyUser: async (username, password) => {
+      if (
+        username === c.env.BASIC_USERNAME &&
+        password === c.env.BASIC_PASSWORD
+      ) {
+        return true;
+      }
+      return false;
+    },
+  });
+  return auth(c, next);
+});
+
+app.route('/', contents);
 
 export default app;

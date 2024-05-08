@@ -38,3 +38,28 @@ export const movieDetails = async (
 
   return response.json() as Promise<MovieDetails>;
 };
+
+export const movieTrailer = async (
+  id: string,
+  tmdbApiKey: string,
+  language: 'fr' | 'en' = 'fr'
+) => {
+  const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=${language}`;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${tmdbApiKey}`,
+    },
+  };
+
+  const response = await fetch(url, options);
+
+  return response.json() as Promise<{
+    results: {
+      type: string;
+      key: string;
+    }[];
+  }>;
+};

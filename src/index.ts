@@ -24,13 +24,13 @@ app.use(
     credentials: true,
     maxAge: 600,
     allowHeaders: ['Content Type', 'Authorization'],
-  }),
+  })
 );
 
 app.use(
   csrf({
     origin: ['cleann.dereje.fr'],
-  }),
+  })
 );
 
 app.use('*', async (c, next) => {

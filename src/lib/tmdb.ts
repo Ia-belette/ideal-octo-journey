@@ -1,13 +1,9 @@
-type TvResults = {
-  backdrop_path: string;
-  poster_path: string;
-  id: number;
-};
+import { MovieDetails, TvResults } from '#/types';
 
 export const findByIdImdb = async (
   id: string,
   tmdbApiKey: string,
-  language: 'fr' | 'en' = 'fr',
+  language: 'fr' | 'en' = 'fr'
 ) => {
   const url = `https://api.themoviedb.org/3/find/${id}?external_source=imdb_id&language=${language}`;
 
@@ -26,7 +22,7 @@ export const findByIdImdb = async (
 export const movieDetails = async (
   id: string,
   tmdbApiKey: string,
-  language: 'fr' | 'en' = 'fr',
+  language: 'fr' | 'en' = 'fr'
 ) => {
   const url = `https://api.themoviedb.org/3/movie/${id}?language=${language}`;
 
@@ -40,5 +36,5 @@ export const movieDetails = async (
 
   const response = await fetch(url, options);
 
-  return response.json();
+  return response.json() as Promise<MovieDetails>;
 };

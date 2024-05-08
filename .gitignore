@@ -8,7 +8,7 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 bun.lockb
-
+seed.ts
 
 
 .env

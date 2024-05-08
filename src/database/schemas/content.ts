@@ -19,6 +19,7 @@ export const contents = pgTable('contents', {
   is_family_friendly: boolean('is_family_friendly').default(false),
   backdrop_path: text('backdrop_path'),
   poster_path: text('poster_path'),
+  featured: boolean('featured').default(false),
 });
 
 export const categories = pgTable('category', {
@@ -41,7 +42,7 @@ export const contentCategories = pgTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.content_id, t.category_id] }),
-  }),
+  })
 );
 
 export const categoryRelations = relations(categories, ({ many }) => ({
@@ -71,5 +72,5 @@ export const contentCategoriesRelations = relations(
       fields: [contentCategories.category_id],
       references: [categories.category_id],
     }),
-  }),
+  })
 );

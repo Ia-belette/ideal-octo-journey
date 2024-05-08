@@ -6,7 +6,12 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "all": true,
+        "useNamingConvention": "off",
+        "noDefaultExport": "off"
+      }
     }
   }
 }

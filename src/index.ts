@@ -19,7 +19,7 @@ app.use(prettyJSON());
 
 app.use(
   cors({
-    origin: ['cleann.dereje.fr'],
+    origin: ['cleann.dereje.fr', 'localhost:3000'],
     allowMethods: ['GET', 'POST', 'DELETE'],
     credentials: true,
     maxAge: 600,
@@ -29,7 +29,7 @@ app.use(
 
 app.use(
   csrf({
-    origin: ['cleann.dereje.fr'],
+    origin: ['cleann.dereje.fr', 'localhost:3000'],
   })
 );
 

@@ -20,7 +20,7 @@ export const findByIdImdb = async (
 };
 
 export const movieDetails = async (
-  id: string,
+  id: number,
   tmdbApiKey: string,
   language: 'fr' | 'en' = 'fr'
 ) => {

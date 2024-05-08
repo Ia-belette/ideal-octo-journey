@@ -17,15 +17,15 @@ app.use(logger());
 
 app.use(prettyJSON());
 
-// app.use(
-//   cors({
-//     origin: ['cleann.dereje.fr', 'localhost:3000'],
-//     allowMethods: ['GET', 'POST', 'DELETE'],
-//     credentials: true,
-//     maxAge: 600,
-//     allowHeaders: ['Content Type', 'Authorization'],
-//   })
-// );
+app.use(
+  cors({
+    origin: ['cleann.dereje.fr', 'localhost:3000'],
+    allowMethods: ['GET', 'POST', 'DELETE'],
+    credentials: true,
+    maxAge: 600,
+    allowHeaders: ['Content Type', 'Authorization'],
+  })
+);
 
 app.use(
   csrf({

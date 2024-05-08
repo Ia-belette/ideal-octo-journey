@@ -4,3 +4,14 @@ export type Env = {
   BASIC_USERNAME: string;
   BASIC_PASSWORD: string;
 };
+
+export type TvResults = {
+  backdrop_path: string;
+  poster_path: string;
+  id: number;
+};
+
+export type MovieDetails = {
+  backdrop_path: string;
+  poster_path: string;
+};

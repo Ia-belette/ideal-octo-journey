@@ -3,6 +3,8 @@ import { cors } from 'hono/cors';
 import { csrf } from 'hono/csrf';
 import { cache } from 'hono/cache';
 import { basicAuth } from 'hono/basic-auth';
+import { prettyJSON } from 'hono/pretty-json';
+import { logger } from 'hono/logger';
 
 import { app as contents } from './controllers/contents';
 import { Env } from './types';
@@ -27,6 +29,8 @@ app.use(
   })
 );
 
+app.use(logger());
+
 app.get(
   '*',
   cache({
@@ -34,6 +38,8 @@ app.get(
     cacheControl: 'max-age=3600',
   })
 );
+
+app.use(prettyJSON());
 
 app.use('*', async (c, next) => {
   const auth = basicAuth({

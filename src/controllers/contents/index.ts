@@ -145,3 +145,16 @@ app.delete(
     }
   }
 );
+
+app.get('/contents/no-family-friendly', async (c) => {
+  try {
+    const db = neondb(c.env.DATABASE_URL);
+    const results = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.is_family_friendly, false));
+    return c.json(results);
+  } catch (error) {
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});

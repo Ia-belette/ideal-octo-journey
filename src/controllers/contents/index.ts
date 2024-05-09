@@ -152,7 +152,8 @@ app.get('/contents/no-family-friendly', async (c) => {
     const results = await db
       .select()
       .from(contents)
-      .where(eq(contents.is_family_friendly, false));
+      .where(eq(contents.is_family_friendly, false))
+      .limit(8);
     return c.json(results);
   } catch (error) {
     return c.json({ error: 'Internal server error' }, 500);

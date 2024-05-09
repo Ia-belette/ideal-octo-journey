@@ -14,7 +14,6 @@ export const app = new Hono<{ Bindings: Env }>();
 app.get('/contents', async (c) => {
   try {
     const db = neondb(c.env.DATABASE_URL);
-    const results = await db.select().from(contents);
     const featured = await db
       .select()
       .from(contents)
@@ -25,10 +24,17 @@ app.get('/contents', async (c) => {
       c.env.TMDB_API_KEY,
       'fr'
     );
-    console.log(featured[0].tb_id);
+
+    const isFamilyFriendly = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.is_family_friendly, true))
+      .limit(8);
+
     return c.json({
-      contents: results,
+      content: featured[0],
       featured: featuredDetails,
+      is_family_friendly: isFamilyFriendly,
     });
   } catch (error) {
     return c.json({ error }, 400);
@@ -99,7 +105,6 @@ app.get(
       const id = c.req.valid('param');
       const movie = await movieDetails(Number(id), c.env.TMDB_API_KEY, 'fr');
       const trailer = await movieTrailer(id, c.env.TMDB_API_KEY, 'fr');
-
       return c.json({ movie, trailer });
     } catch (error) {
       return c.json({ error: 'Internal server error' }, 500);

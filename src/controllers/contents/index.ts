@@ -11,36 +11,6 @@ import type { Env } from '#/types';
 
 export const app = new Hono<{ Bindings: Env }>();
 
-app.get('/contents', async (c) => {
-  try {
-    const db = neondb(c.env.DATABASE_URL);
-    const featured = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.featured, contents.is_family_friendly));
-
-    const featuredDetails = await movieDetails(
-      Number(featured[0].tb_id),
-      c.env.TMDB_API_KEY,
-      'fr'
-    );
-
-    const isFamilyFriendly = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.is_family_friendly, true));
-    // .limit(8);
-
-    return c.json({
-      content: featured[0],
-      featured: featuredDetails,
-      is_family_friendly: isFamilyFriendly,
-    });
-  } catch (error) {
-    return c.json({ error }, 400);
-  }
-});
-
 app.post(
   '/contents',
   validator('json', (content, c) => {
@@ -91,40 +61,6 @@ app.post(
   }
 );
 
-app.get(
-  '/contents/details/:id',
-  validator('param', (content, c) => {
-    const parsed = movieDetailsSchema.safeParse(content.id);
-    if (!parsed.success) {
-      return c.json({ error: 'Invalid request payload' }, 400);
-    }
-    return parsed.data;
-  }),
-  async (c) => {
-    try {
-      const id = c.req.valid('param');
-      const movie = await movieDetails(Number(id), c.env.TMDB_API_KEY, 'fr');
-      const trailer = await movieTrailer(id, c.env.TMDB_API_KEY, 'fr');
-      return c.json({ movie, trailer });
-    } catch (error) {
-      return c.json({ error: 'Internal server error' }, 500);
-    }
-  }
-);
-
-app.get('/contents/family-friendly', async (c) => {
-  try {
-    const db = neondb(c.env.DATABASE_URL);
-    const results = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.is_family_friendly, true));
-    return c.json(results);
-  } catch (error) {
-    return c.json({ error: 'Internal server error' }, 500);
-  }
-});
-
 app.delete(
   '/contents/:id',
   validator('param', (content, c) => {
@@ -145,17 +81,3 @@ app.delete(
     }
   }
 );
-
-app.get('/contents/no-family-friendly', async (c) => {
-  try {
-    const db = neondb(c.env.DATABASE_URL);
-    const results = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.is_family_friendly, false));
-    // .limit(8);
-    return c.json(results);
-  } catch (error) {
-    return c.json({ error: 'Internal server error' }, 500);
-  }
-});

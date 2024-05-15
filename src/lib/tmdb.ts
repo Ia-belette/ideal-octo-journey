@@ -3,7 +3,7 @@ import { MovieDetails, TvResults } from '#/types';
 export const findByIdImdb = async (
   id: string,
   tmdbApiKey: string,
-  language: 'fr' | 'en' = 'fr'
+  language: string
 ) => {
   const url = `https://api.themoviedb.org/3/find/${id}?external_source=imdb_id&language=${language}`;
 
@@ -22,7 +22,7 @@ export const findByIdImdb = async (
 export const movieDetails = async (
   id: number,
   tmdbApiKey: string,
-  language: 'fr' | 'en' = 'fr'
+  language: string
 ) => {
   const url = `https://api.themoviedb.org/3/movie/${id}?language=${language}`;
 
@@ -42,7 +42,7 @@ export const movieDetails = async (
 export const movieTrailer = async (
   id: string,
   tmdbApiKey: string,
-  language: 'fr' | 'en' = 'fr'
+  language: string
 ) => {
   const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=${language}`;
 

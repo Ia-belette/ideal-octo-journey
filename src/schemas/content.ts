@@ -7,3 +7,7 @@ export const contentPostCreateSchema = z.object({
 });
 
 export const movieDetailsSchema = z.string();
+
+export const langSchema = z.object({
+  lang: z.string().default('fr'),
+});

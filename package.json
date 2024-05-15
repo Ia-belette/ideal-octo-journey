@@ -4,7 +4,7 @@
     "deploy": "wrangler deploy --minify src/index.ts",
     "d:generate": "drizzle-kit generate:pg",
     "d:studio": "drizzle-kit studio",
-    "d:push": "drizzle-kit push:pg",
+    "d:push": "drizzle-kit push",
     "format": "bunx @biomejs/biome format ./src --write",
     "lint": "bunx @biomejs/biome lint ./src"
   },
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240403.0",
-    "drizzle-kit": "^0.20.18",
+    "drizzle-kit": "^0.21.1",
     "wrangler": "^3.47.0"
   }
 }

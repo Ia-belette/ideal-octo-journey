@@ -11,3 +11,7 @@ export const movieDetailsSchema = z.string();
 export const langSchema = z.object({
   lang: z.string().default('fr'),
 });
+
+export const movieIdSchema = z.object({
+  id: z.string(),
+});

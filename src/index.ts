@@ -49,13 +49,13 @@ app.use('*', async (c, next) => {
   return auth(c, next);
 });
 
-app.get(
-  '*',
-  cache({
-    cacheName: 'cleann-cache',
-    cacheControl: 'max-age=3600',
-  })
-);
+// app.get(
+//   '*',
+//   cache({
+//     cacheName: 'cleann-cache',
+//     cacheControl: 'max-age=3600',
+//   })
+// );
 
 app.route('/', contents);
 

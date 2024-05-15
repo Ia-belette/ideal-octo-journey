@@ -17,7 +17,7 @@ app.get('/contents', async (c) => {
     const featured = await db
       .select()
       .from(contents)
-      .where(eq(contents.featured, true));
+      .where(eq(contents.featured, contents.is_family_friendly));
 
     const featuredDetails = await movieDetails(
       Number(featured[0].tb_id),
@@ -28,8 +28,8 @@ app.get('/contents', async (c) => {
     const isFamilyFriendly = await db
       .select()
       .from(contents)
-      .where(eq(contents.is_family_friendly, true))
-      .limit(8);
+      .where(eq(contents.is_family_friendly, true));
+    // .limit(8);
 
     return c.json({
       content: featured[0],
@@ -152,8 +152,8 @@ app.get('/contents/no-family-friendly', async (c) => {
     const results = await db
       .select()
       .from(contents)
-      .where(eq(contents.is_family_friendly, false))
-      .limit(8);
+      .where(eq(contents.is_family_friendly, false));
+    // .limit(8);
     return c.json(results);
   } catch (error) {
     return c.json({ error: 'Internal server error' }, 500);

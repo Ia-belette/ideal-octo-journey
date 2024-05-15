@@ -11,6 +11,7 @@ import {
 import { relations } from 'drizzle-orm';
 
 export const contentFlag = pgEnum('flag', ['none', 'moderate']);
+export const contentType = pgEnum('type_of_content', ['movie', 'tv_show']);
 
 export const contents = pgTable('contents', {
   id: serial('id').primaryKey(),
@@ -20,14 +21,12 @@ export const contents = pgTable('contents', {
   backdrop_path: text('backdrop_path'),
   poster_path: text('poster_path'),
   featured: boolean('featured').default(false),
+  type_of_content: contentType('type_of_content').default('movie'),
 });
 
-export const categories = pgTable('category', {
+export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
-  category_id: integer('category_id'),
-  name: varchar('name', {
-    length: 255,
-  }),
+  name: varchar('name', { length: 255 }).notNull(),
 });
 
 export const contentCategories = pgTable(
@@ -45,14 +44,6 @@ export const contentCategories = pgTable(
   })
 );
 
-export const categoryRelations = relations(categories, ({ many }) => ({
-  contents: many(contents),
-}));
-
-export const contentRelations = relations(contents, ({ many }) => ({
-  content: many(contents),
-}));
-
 export const contentsRelations = relations(contents, ({ many }) => ({
   categories: many(contentCategories),
 }));
@@ -65,12 +56,12 @@ export const contentCategoriesRelations = relations(
   contentCategories,
   ({ one }) => ({
     content: one(contents, {
-      fields: [contentCategories.category_id],
+      fields: [contentCategories.content_id],
       references: [contents.id],
     }),
     category: one(categories, {
       fields: [contentCategories.category_id],
-      references: [categories.category_id],
+      references: [categories.id],
     }),
   })
 );

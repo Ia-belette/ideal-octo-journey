@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { eq } from 'drizzle-orm';
+import { eq, and, isNull, isNotNull } from 'drizzle-orm';
 import { validator } from 'hono/validator';
 
 import { contents } from '#/database/schemas/content';
@@ -7,24 +7,14 @@ import { neondb } from '#/lib/db';
 import { movieDetails, movieTrailer } from '#/lib/tmdb';
 
 import type { Env } from '#/types';
-import { z } from 'zod';
+
+import { langValidator } from '#/lib/lang-validator';
 
 export const app = new Hono<{ Bindings: Env }>();
 
 app.get(
   '/films/featured',
-  validator('query', (content, c) => {
-    const schema = z.object({
-      lang: z.string().default('fr'),
-    });
-    const parsed = schema.safeParse(content);
-
-    if (!parsed.success) {
-      return c.json({ error: 'Invalid request payload' }, 400);
-    }
-
-    return parsed.data;
-  }),
+  validator('query', (content, c) => langValidator(content, c)),
   async (c) => {
     try {
       const { lang } = c.req.valid('query');
@@ -32,8 +22,17 @@ app.get(
       const featured = await db
         .select()
         .from(contents)
-        .where(eq(contents.type_of_content, 'movie'))
+        .where(
+          and(
+            eq(contents.type_of_content, 'movie'),
+            eq(contents.featured, true)
+          )
+        )
         .limit(1);
+
+      if (featured.length === 0) {
+        return c.json({ error: 'No featured movie found' }, 404);
+      }
 
       const featuredDetails = await movieDetails(
         Number(featured[0].tb_id),
@@ -50,4 +49,3 @@ app.get(
     }
   }
 );
-

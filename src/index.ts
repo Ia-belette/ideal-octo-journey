@@ -15,7 +15,7 @@ import type { Env } from '#/types';
 
 const app = new Hono<{
   Bindings: Env;
-}>();
+}>().basePath('/api');
 
 app.use(etag(), logger());
 

@@ -5,6 +5,8 @@ import { cache } from 'hono/cache';
 import { basicAuth } from 'hono/basic-auth';
 import { prettyJSON } from 'hono/pretty-json';
 import { logger } from 'hono/logger';
+import { etag } from 'hono/etag';
+import { secureHeaders } from 'hono/secure-headers';
 
 import { app as contents } from '#/controllers/contents';
 import { app as films } from '#/controllers/contents/films';
@@ -15,7 +17,7 @@ const app = new Hono<{
   Bindings: Env;
 }>();
 
-app.use(logger());
+app.use(etag(), logger());
 
 app.use(prettyJSON());
 
@@ -31,6 +33,14 @@ app.use(
 app.use(
   csrf({
     origin: ['cleann.dereje.fr', 'localhost:3000'],
+  })
+);
+
+app.use(
+  '*',
+  secureHeaders({
+    xFrameOptions: false,
+    xXssProtection: false,
   })
 );
 
